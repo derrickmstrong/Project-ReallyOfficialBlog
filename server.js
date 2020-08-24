@@ -1,3 +1,7 @@
+//https://scotch.io/tutorials/build-a-blog-using-expressjs-and-react-in-30-minutes
+
+// FIXME: In console upon adding new post, Unhandled rejection Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -41,15 +45,18 @@ const oidc = new ExpressOIDC({
 app.use(oidc.router); // Checks ensureAuthenticated and isAuthenticated and adds login and callback routes
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 /** Routes Config **/
 // Home (User Login) route
 app.get('/home', (req, res) => {
-  res.send(`<h1>Welcome!!</h1> <a href='/login'>Login</a>`);
+//   res.send(`<h1>Welcome!!</h1> <a href='/login'>Login</a>`);
+  res.sendFile(path.join(__dirname, './public/home.html'));
 });
 // Admin route
 app.get('/admin', oidc.ensureAuthenticated(), (req, res) => {
-  res.send(`<h1>Admin page</h1>`);
+//   res.send(`<h1>Admin page</h1>`);
+res.sendFile(path.join(__dirname, './public/admin.html'));
 });
 
 // Logout and redirect to Home route
@@ -68,7 +75,7 @@ app.get('/', (req, res) => {
 const database = new Sequelize({
   dialect: 'sqlite',
   storage: './db.sqlite',
-  operatorsAliases: false,
+//   operatorsAliases: false,
 });
 
 // Define database model for table
